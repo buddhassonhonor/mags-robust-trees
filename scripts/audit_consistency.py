@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -105,17 +106,28 @@ def main() -> int:
             "Response Figure R2",
         ]
         stale = [
-            "0.30 percentage points",
             "extended tuning and attacks retain their explicitly stated smaller seed counts",
             "5 seeds for tuned and stronger baselines",
             "10 core seeds and 5 extended seeds",
+        ]
+        primary_headline_values = [
+            float(value)
+            for value in re.findall(
+                r"(?<![\d.])(\d+\.\d+)\s+percentage points on average",
+                combined,
+            )
         ]
         add("Main-manuscript numerical strings", all(value in main_text for value in required_main),
             "Primary, tuned, pruned, attack, and seed statements match the master")
         add("Reply numerical strings", all(value in reply_text for value in required_reply),
             "Primary and corrected medians, 30-seed scope, and R1/R2 labels match")
-        add("No stale numerical statements", not any(value in combined for value in stale),
-            "No 0.30-pp headline or reduced-seed description remains")
+        add(
+            "No stale numerical statements",
+            bool(primary_headline_values)
+            and all(abs(value - 0.17) < 5e-4 for value in primary_headline_values)
+            and not any(value in combined for value in stale),
+            "All primary headline values match the master; no reduced-seed description remains",
+        )
     else:
         add("Local manuscript/reply audit", not args.require_manuscript,
             "Not distributed in the public artifact; use --require-manuscript in the author workspace")

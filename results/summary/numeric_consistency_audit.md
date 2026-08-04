@@ -19,6 +19,6 @@ Unique source: `results/summary/results_master.json`, regenerated from the three
 | Figures 1--5 | PASS | PNG and PDF present for all five figures |
 | Main-manuscript numerical strings | PASS | Primary, tuned, pruned, attack, and seed statements match the master |
 | Reply numerical strings | PASS | Primary and corrected medians, 30-seed scope, and R1/R2 labels match |
-| No stale numerical statements | PASS | No 0.30-pp headline or reduced-seed description remains |
+| No stale numerical statements | PASS | All primary headline values match the master; no reduced-seed description remains |
 
 Overall status: **PASS**.
