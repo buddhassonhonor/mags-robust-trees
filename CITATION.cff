@@ -2,8 +2,9 @@ cff-version: 1.2.0
 message: "If you use this artifact, please cite the associated paper and archived release."
 title: "A Lightweight Margin-Aware Split Preference for Interpretable Decision Trees"
 type: software
-version: 1.0.0
-date-released: 2026-08-04
+version: 1.0.1
+date-released: 2026-08-05
+doi: "10.5281/zenodo.21798553"
 authors:
   - family-names: Li
     given-names: Quanfa
@@ -12,6 +13,7 @@ authors:
   - family-names: Huang
     given-names: Zhigao
 repository-code: "https://github.com/buddhassonhonor/mags-robust-trees"
+repository-artifact: "https://zenodo.org/records/21798553"
 license: MIT
 keywords:
   - decision trees

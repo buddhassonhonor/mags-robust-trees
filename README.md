@@ -81,7 +81,12 @@ As cross-checks against `results_master.json`, fixed MAGS minus matched Gini at 
 
 ## Fixed release
 
-The submission cites the immutable GitHub release and its Zenodo archive. Release tag and DOI are recorded here after the archive is minted.
+The submission cites the fixed GitHub release
+[`v1.0.1`](https://github.com/buddhassonhonor/mags-robust-trees/releases/tag/v1.0.1),
+archived on Zenodo with the version-specific DOI
+[`10.5281/zenodo.21798553`](https://doi.org/10.5281/zenodo.21798553).
+The concept DOI for all versions is
+[`10.5281/zenodo.21798552`](https://doi.org/10.5281/zenodo.21798552).
 
 ## License
 
