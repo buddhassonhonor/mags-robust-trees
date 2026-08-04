@@ -1,0 +1,25 @@
+{
+  "datasets": [
+    "adult", "balance_scale", "bank_marketing", "breast_cancer",
+    "car_evaluation", "cmc", "compas", "covertype_3000",
+    "credit_approval", "credit_g_openml", "diabetes", "digits",
+    "german_credit", "heart_statlog", "iris", "mfeat_morphological",
+    "mushroom", "pendigits", "segment", "sonar", "synthetic_xor",
+    "spambase", "ionosphere", "tic_tac_toe", "vehicle", "vote", "wine"
+  ],
+  "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+  "methods": [
+    "matched_gini", "mags_fixed", "mags_binary_excluded", "cart_fixed",
+    "mags_tuned", "cart_tuned_depth", "cart_pruned", "noise_augmented_cart",
+    "random_forest", "extra_trees", "linear_svm", "rbf_svm"
+  ],
+  "tree_attack_methods": [
+    "matched_gini", "mags_fixed", "mags_binary_excluded", "cart_fixed",
+    "mags_tuned", "cart_tuned_depth", "cart_pruned", "noise_augmented_cart"
+  ],
+  "noise_standard_deviations": [0.0, 0.05, 0.1, 0.2, 0.3],
+  "attack_epsilon": 0.05,
+  "test_fraction": 0.35,
+  "attack_constraint": "exact opposite-leaf search under continuous-coordinate perturbations with encoded binary columns fixed",
+  "workers": 4
+}

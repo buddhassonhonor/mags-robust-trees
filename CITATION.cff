@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this artifact, please cite the associated paper and archived release."
+title: "A Lightweight Margin-Aware Split Preference for Interpretable Decision Trees"
+type: software
+version: 1.0.0
+date-released: 2026-08-04
+authors:
+  - family-names: Li
+    given-names: Quanfa
+  - family-names: Pan
+    given-names: Miao
+  - family-names: Huang
+    given-names: Zhigao
+repository-code: "https://github.com/buddhassonhonor/mags-robust-trees"
+license: MIT
+keywords:
+  - decision trees
+  - interpretable machine learning
+  - robustness evaluation
+  - tabular classification

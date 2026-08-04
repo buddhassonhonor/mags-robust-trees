@@ -1,0 +1,12 @@
+{
+  "experiment_timestamp": "2026-08-04T22:39:40+0800",
+  "python": "3.13.2",
+  "numpy": "2.4.3",
+  "pandas": "2.3.3",
+  "scipy": "1.15.3",
+  "scikit_learn": "1.8.0",
+  "operating_system": "Windows-11-10.0.26200-SP0",
+  "core_protocol": "27 datasets; all 12 methods; identical stratified splits for seeds 0--29",
+  "exact_attack_protocol": "27 datasets; all 8 single-tree methods; seeds 0--29; encoded binary columns fixed",
+  "random_seeds": "0--29 for every method and constrained attack"
+}

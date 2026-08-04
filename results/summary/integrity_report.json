@@ -1,0 +1,17 @@
+{
+  "metrics_rows": 48600,
+  "metrics_unique": 48600,
+  "metrics_expected": 48600,
+  "tree_stats_rows": 9720,
+  "tree_stats_unique": 9720,
+  "tree_stats_expected": 9720,
+  "attack_rows": 6480,
+  "attack_unique": 6480,
+  "attack_expected": 6480,
+  "datasets_match": true,
+  "seeds_match": true,
+  "methods_match": true,
+  "attack_methods_match": true,
+  "missing_numeric_metrics": 0,
+  "passed": true
+}

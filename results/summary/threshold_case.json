@@ -1,0 +1,19 @@
+{
+  "path": "RLL",
+  "n_node": 32,
+  "gini_feature": 42,
+  "gini_threshold": -0.34497000207495476,
+  "mags_feature": 42,
+  "mags_threshold": 0.11418561010167626,
+  "same_feature": true,
+  "dataset": "sonar",
+  "seed": 7,
+  "both_continuous": true,
+  "n_classes": 2,
+  "candidate_count": 1584,
+  "selected_features": [
+    37,
+    42
+  ],
+  "note": "Feature indices refer to the encoded matrix; the example is a real training node."
+}
