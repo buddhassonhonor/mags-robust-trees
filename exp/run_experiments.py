@@ -51,13 +51,13 @@ COMPLETE_DATASETS = [
     "spambase", "ionosphere", "tic_tac_toe", "vehicle", "vote", "wine",
 ]
 NOISE_LEVELS = [0.0, 0.05, 0.10, 0.20, 0.30]
-CORE_METHODS = ["matched_gini", "mags_fixed", "mags_binary_excluded", "cart_fixed"]
+CORE_METHODS = ["matched_gini", "mags_fixed", "mags_binary_excluded", "matched_gini_unrestricted", "mags_fixed_unrestricted", "cart_fixed"]
 EXTENDED_METHODS = [
     "mags_tuned", "cart_tuned_depth", "cart_pruned", "noise_augmented_cart",
     "random_forest", "extra_trees", "linear_svm", "rbf_svm",
 ]
 TREE_METHODS = [
-    "matched_gini", "mags_fixed", "mags_binary_excluded", "cart_fixed",
+    "matched_gini", "mags_fixed", "mags_binary_excluded", "matched_gini_unrestricted", "mags_fixed_unrestricted", "cart_fixed",
     "mags_tuned", "cart_tuned_depth", "cart_pruned", "noise_augmented_cart",
 ]
 
@@ -260,6 +260,7 @@ def fit_custom(
     alpha: float,
     binary_mask: np.ndarray,
     binary_policy: str = "standard",
+    candidate_filter: str = "class_aware",
 ) -> tuple[MarginAwareTree, dict]:
     started = time.perf_counter()
     model = MarginAwareTree(
@@ -270,6 +271,7 @@ def fit_custom(
         score_mode="gain_gated",
         binary_features=binary_mask,
         binary_margin_policy=binary_policy,
+        candidate_filter=candidate_filter,
     )
     model.fit(X, y)
     stats = custom_stats(model)
@@ -319,6 +321,28 @@ def enumerate_sklearn_leaves(model: DecisionTreeClassifier) -> tuple[np.ndarray,
     return np.stack([r[0] for r in rows]), np.stack([r[1] for r in rows]), np.asarray([r[2] for r in rows])
 
 
+def enumerate_groot_leaves(model) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Extract leaf boxes from a fitted GROOT binary tree without importing GROOT."""
+    n_features = model.n_features_in_
+    rows: list[tuple[np.ndarray, np.ndarray, int]] = []
+
+    def walk(node, low: np.ndarray, high: np.ndarray) -> None:
+        if node.is_leaf():
+            rows.append((low.copy(), high.copy(), int(np.argmax(node.value))))
+            return
+        j = int(node.feature)
+        v = float(node.threshold)
+        left_high = high.copy()
+        left_high[j] = min(left_high[j], v)
+        walk(node.left_child, low, left_high)
+        right_low = low.copy()
+        right_low[j] = max(right_low[j], v)
+        walk(node.right_child, right_low, high)
+
+    walk(model.root_, np.full(n_features, -np.inf), np.full(n_features, np.inf))
+    return np.stack([r[0] for r in rows]), np.stack([r[1] for r in rows]), np.asarray([r[2] for r in rows])
+
+
 def exact_continuous_tree_attack(
     model, X: np.ndarray, y: np.ndarray, binary_mask: np.ndarray, eps: float = 0.05
 ) -> dict:
@@ -326,6 +350,8 @@ def exact_continuous_tree_attack(
     pred = np.asarray(model.predict(X), dtype=int)
     if isinstance(model, MarginAwareTree):
         lower, upper, leaf_class = enumerate_custom_leaves(model, X.shape[1])
+    elif hasattr(model, "root_") and hasattr(model.root_, "is_leaf"):
+        lower, upper, leaf_class = enumerate_groot_leaves(model)
     else:
         lower, upper, leaf_class = enumerate_sklearn_leaves(model)
     attacked = X.copy()
@@ -405,13 +431,15 @@ def run_one(
         )
         X_train, X_test, binary_mask, data_meta = preprocess_train_test(X_train, X_test, data_meta)
         models: list[tuple[str, object, dict]] = []
-        for method, alpha, policy in [
-            ("matched_gini", 0.0, "standard"),
-            ("mags_fixed", 0.5, "standard"),
-            ("mags_binary_excluded", 0.5, "exclude"),
+        for method, alpha, policy, filter_mode in [
+            ("matched_gini", 0.0, "standard", "class_aware"),
+            ("mags_fixed", 0.5, "standard", "class_aware"),
+            ("mags_binary_excluded", 0.5, "exclude", "class_aware"),
+            ("matched_gini_unrestricted", 0.0, "standard", "unrestricted"),
+            ("mags_fixed_unrestricted", 0.5, "standard", "unrestricted"),
         ]:
             if method in selected_methods:
-                model, meta = fit_custom(X_train, y_train, spec, method, alpha, binary_mask, policy)
+                model, meta = fit_custom(X_train, y_train, spec, method, alpha, binary_mask, policy, filter_mode)
                 models.append((method, model, meta))
         if "cart_fixed" in selected_methods:
             started = time.perf_counter()

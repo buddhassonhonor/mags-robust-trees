@@ -1,8 +1,8 @@
-# A Lightweight Margin-Aware Split Preference for Interpretable Decision Trees
+# Local Margin Preferences in Decision Trees: A Controlled Empirical Study of Robustness
 
-This repository is the reproducibility artifact for the paper **“A Lightweight Margin-Aware Split Preference for Interpretable Decision Trees.”** It contains the implementation, experiment configurations, final per-run results, statistical summaries, manuscript figures, environment metadata, and integrity tests used for the submitted revision.
+This repository contains the implementation, experiment configurations, per-run results, statistical summaries, figures, and integrity checks for **“Local Margin Preferences in Decision Trees: A Controlled Empirical Study of Robustness.”**
 
-The evidence supports a deliberately narrow conclusion: the adjacent-gap preference has a small, heterogeneous mean effect relative to an implementation-matched Gini tree and does not establish a general predictive or adversarial-robustness advantage.
+The adjacent-gap preference has a small, heterogeneous mean effect relative to an implementation-matched Gini tree. Pruned CART and adversarially trained single trees have lower flip rates under the evaluated attack.
 
 ## Repository contents
 
@@ -46,7 +46,10 @@ $env:MAGS_DATA_ROOT = (Resolve-Path data)
 python scripts/run_core.py --workers 4
 python scripts/run_baselines.py --workers 4
 python scripts/run_attacks.py --workers 4
-python scripts/build_statistics.py
+python scripts/build_classaware_statistics.py
+python scripts/audit_candidate_space.py
+python scripts/compare_robust_trees.py
+python scripts/summarize_robust_trees.py
 python scripts/generate_figures.py
 python scripts/validate_results.py
 python scripts/audit_consistency.py
@@ -66,6 +69,8 @@ The full 27-dataset, 30-seed run is CPU based. On the reference Intel Core Ultra
 - Per-run predictive metrics: `results/raw/results.csv`
 - Tree structure and timing: `results/raw/tree_stats.csv`
 - Constrained exact opposite-leaf attacks: `results/raw/exact_attacks.csv`
+- Binary-class robust-tree comparison: `results/raw/robust_tree_comparison.csv`
+- Robust-tree dataset means and paired comparisons: `results/summary/robust_tree_methods.csv` and `results/summary/robust_tree_comparisons.csv`
 - Unique numerical source: `results/summary/results_master.json`
 - Main comparison statistics: `results/summary/table2_comparisons.csv`
 - Attack comparison statistics: `results/summary/table3_attack_comparisons.csv`
@@ -75,13 +80,15 @@ The full 27-dataset, 30-seed run is CPU based. On the reference Intel Core Ultra
 
 ## Expected checks and key results
 
-The final artifact contains 27 datasets, seeds 0--29, 12 methods at each of five noise levels, and constrained exact attacks for all eight single-tree methods: 48,600 predictive records, 9,720 tree-statistic records, and 6,480 attack records. `scripts/validate_results.py` exits nonzero if a dataset--seed--method task is missing, duplicated, or marked as failed.
+The main artifact contains 27 benchmark configurations, seeds 0--29, 14 methods at each of five noise levels, and constrained exact attacks for ten single-tree methods: 56,700 predictive records, 11,340 tree-statistic records, and 8,100 attack records. The configurations include one synthetic task and two sources of German Credit. `scripts/validate_results.py` checks completeness and uniqueness of these records.
 
-As cross-checks against `results_master.json`, fixed MAGS minus matched Gini at $\sigma=0.2$ is 0.17 percentage points on average (95% CI -0.07 to 0.41), with median 0.00, 12/5/10 wins/ties/losses, and Wilcoxon $p=0.527$. Under the constrained attack at $\epsilon=0.05$, the fixed-MAGS minus matched-Gini flip-rate delta is -0.52 percentage points (95% CI -0.95 to -0.09; Holm-adjusted $p=0.072$). These values are checksums for the archived run, not broad performance claims.
+As cross-checks against `results_master.json`, fixed MAGS minus matched Gini at $\sigma=0.2$ is +0.21 percentage points on average (95% CI -0.08 to 0.50; Wilcoxon $p=0.434$). Under the constrained attack at $\epsilon=0.05$, the flip-rate delta is -0.73 percentage points (Holm-adjusted $p=0.013$). Excluding the synthetic task and duplicate German Credit source gives a noisy-accuracy delta of +0.25 points ($p=0.274$) and flip-rate delta of -0.69 points (unadjusted $p=0.011$).
 
-## Fixed release
+The robust-tree comparison uses 14 distinct public binary-class datasets and 30 paired splits per dataset. It evaluates GROOT and the GROOT implementation of the Chen-style robust Gini heuristic at the same continuous-feature attack budget, with encoded binary features fixed. Run `python scripts/compare_robust_trees.py` and `python scripts/summarize_robust_trees.py` to reproduce its per-run and summary files. The raw comparison also contains an alternate German Credit source, which the summary excludes to avoid double-counting.
 
-The submission cites the fixed GitHub release
+## Prior fixed release
+
+The original benchmark artifact was published as GitHub release
 [`v1.0.1`](https://github.com/buddhassonhonor/mags-robust-trees/releases/tag/v1.0.1),
 archived on Zenodo with the version-specific DOI
 [`10.5281/zenodo.21798553`](https://doi.org/10.5281/zenodo.21798553).

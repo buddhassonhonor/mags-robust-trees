@@ -67,14 +67,26 @@ def candidate_rows(X: np.ndarray, y: np.ndarray, max_thresholds: int, min_sample
         order = np.argsort(X[:, j])
         values = X[order, j]
         labels = y[order]
-        indices = np.where(np.diff(values) > 1e-9)[0]
-        if len(indices) > max_thresholds:
-            ranks = np.linspace(0, len(indices) - 1, max_thresholds).round().astype(int)
-            indices = indices[np.unique(ranks)]
-        value_range = values[-1] - values[0] if values[-1] > values[0] else 1.0
-        for k in indices:
+        unique_values, starts = np.unique(values, return_index=True)
+        if len(unique_values) < 2:
+            continue
+        classes = []
+        for r in range(len(unique_values)):
+            end = starts[r + 1] if r + 1 < len(unique_values) else len(values)
+            classes.append(np.unique(labels[starts[r]:end]))
+        candidates = []
+        for r in range(len(unique_values) - 1):
+            k = starts[r + 1] - 1
             if k + 1 < min_samples_leaf or len(y) - (k + 1) < min_samples_leaf:
                 continue
+            if len(classes[r]) == len(classes[r + 1]) == 1 and classes[r][0] == classes[r + 1][0]:
+                continue
+            candidates.append(k)
+        if len(candidates) > max_thresholds:
+            ranks = np.linspace(0, len(candidates) - 1, max_thresholds).round().astype(int)
+            candidates = [candidates[i] for i in np.unique(ranks)]
+        value_range = values[-1] - values[0] if values[-1] > values[0] else 1.0
+        for k in candidates:
             left_y, right_y = labels[: k + 1], labels[k + 1 :]
             gain = current - (len(left_y) * gini(left_y) + len(right_y) * gini(right_y)) / len(y)
             norm_gain = gain / max_gini if max_gini > 0 else 0.0

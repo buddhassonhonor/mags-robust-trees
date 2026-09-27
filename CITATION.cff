@@ -1,19 +1,18 @@
 cff-version: 1.2.0
 message: "If you use this artifact, please cite the associated paper and archived release."
-title: "A Lightweight Margin-Aware Split Preference for Interpretable Decision Trees"
+title: "Local Margin Preferences in Decision Trees: A Controlled Empirical Study of Robustness"
 type: software
-version: 1.0.1
-date-released: 2026-08-05
-doi: "10.5281/zenodo.21798553"
+version: 2.0.0
+date-released: 2026-09-27
 authors:
-  - family-names: Li
-    given-names: Quanfa
-  - family-names: Pan
-    given-names: Miao
   - family-names: Huang
     given-names: Zhigao
+    email: "zghuang@qztc.edu.cn"
+    orcid: "https://orcid.org/0009-0003-8200-9534"
+  - family-names: Wu
+    given-names: Pinghui
+    email: "07015@qztc.edu.cn"
 repository-code: "https://github.com/buddhassonhonor/mags-robust-trees"
-repository-artifact: "https://zenodo.org/records/21798553"
 license: MIT
 keywords:
   - decision trees

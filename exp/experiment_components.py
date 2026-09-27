@@ -33,7 +33,7 @@ sys.path.insert(0, str(PACKAGE_DIR / "src" / "harnesses"))
 from margin_aware_splitting_harness import MarginAwareTree, generate_data  # noqa: E402
 
 
-DATA_ROOT = Path(os.environ.get("MAGS_DATA_ROOT", PACKAGE_DIR / "data")).resolve()
+DATA_ROOT = Path(os.environ.get("MAGS_DATA_ROOT", "D:/data" if Path("D:/data").exists() else PACKAGE_DIR / "data")).resolve()
 OUT_DIR = PACKAGE_DIR / "exp" / "eswa_main"
 RAW_CSV = OUT_DIR / "results.csv"
 SUMMARY_CSV = OUT_DIR / "summary.csv"

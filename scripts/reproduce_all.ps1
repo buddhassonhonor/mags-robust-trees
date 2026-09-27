@@ -29,8 +29,14 @@ $logPath = Join-Path $metadataDir "clean_reproduction.log"
     if ($LASTEXITCODE -ne 0) { throw "Threshold-case extraction failed with exit code $LASTEXITCODE" }
     New-Item -ItemType Directory -Force -Path results/summary | Out-Null
     Copy-Item exp/final_validation/threshold_case* results/summary/ -Force
-    python scripts/build_statistics.py
+    python scripts/build_classaware_statistics.py
     if ($LASTEXITCODE -ne 0) { throw "Statistics build failed with exit code $LASTEXITCODE" }
+    python scripts/audit_candidate_space.py
+    if ($LASTEXITCODE -ne 0) { throw "Candidate audit failed with exit code $LASTEXITCODE" }
+    python scripts/compare_robust_trees.py
+    if ($LASTEXITCODE -ne 0) { throw "Robust-tree comparison failed with exit code $LASTEXITCODE" }
+    python scripts/summarize_robust_trees.py
+    if ($LASTEXITCODE -ne 0) { throw "Robust-tree summary failed with exit code $LASTEXITCODE" }
     python scripts/generate_figures.py
     if ($LASTEXITCODE -ne 0) { throw "Figure generation failed with exit code $LASTEXITCODE" }
     python scripts/validate_results.py
